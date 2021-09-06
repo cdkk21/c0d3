@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+
+import collections
+import json
+import locale
+import mimetypes
+import os.path
+import reports
+import emails
+import sys
+
+
+def load_data(filename):
+  with open(filename) as json_file:
+    dat_a = json.load(json_file)
+  return dat_a
+
+
+def format_car(car):
+  
+  return "{} {} ({})".format(
+      car["car_make"], car["car_model"], car["car_year"])
+
+
+def process_data(data):
+  locale.setlocale(locale.LC_ALL, 'en_US.UTF8')
+  mx_sales = {"total_sales": 0}
+  mx_revenue = {"revenue": 0}
+  car_year_sales = collections.defaultdict(int)
+  for item in dat_a:
+    # We need to convert "$1234.56" into 1234.56
+    item_price = locale.atof(item["price"].strip("$"))
+    item_revenue = item["total_sales"] * item_price
+    if item_revenue > mx_revenue["revenue"]:
+      item["revenue"] = item_revenue
+      mx_revenue = item
+      
+    if item["total_sales"] > max_sales["total_sales"]:
+      mx_sales = item
+    car_year_sales[item["car"]["car_year"]] += item["total_sales"]
+    
+  max_car_sales_year = (0,0)
+  for year, sales in car_year_sales.items():
+    if sales > max_car_sales_year[1]:
+      max_car_sales_year = (year,sales)
+  summary = []
+  summary.append("The {} generated the most revenue: ${}".format(format_car(mx_revenue["car"]), mx_revenue["revenue"]))
+  summary.append("The {} had the most sales: {}".format(format_car(mx_sales["car"]), x_sales["total_sales"]))
+  summary.append("The most popular year was {} with {} sales.".format(max_car_sales_year[0], max_car_sales_year[1]))
+  return summary
+
+
+def cars_dict_to_table(car_data):
+  table_data = [["ID", "Car", "Price", "Total Sales"]]
+  for item in car_data:
+    table_data.append([item["id"], format_car(item["car"]), item["price"], item["total_sales"]])
+  return table_data
+
+
+def main(argv):
+  dat_a = load_data(os.path.expanduser('~') + "/car_sales.json")
+  summary = process_data(dat_a)
+
+  # Generate a paragraph that contains the necessary summary
+  paragraph = "<br/>".join(summary)
+  # Generate a table that contains the list of cars
+  table_data = cars_dict_to_table(dat_a)
+  # Generate the PDF report
+  titl = "Sales summary for last month"
+  attachment = "/tmp/cars.pdf"
+  reports.generate(attachment, titl, paragraph, table_data)
+
+  # Send the email
+  sen_der = "automation@example.com"
+  rec_eiver = "{}@example.com".format(os.environ.get('USER'))
+  body = "\n".join(summary)
+  message = emails.generate(sen_der, rec_eiver, titl, body, attachment)
+  emails.send(message)
+
+
+if __name__ == "__main__":
+  main(sys.argv)

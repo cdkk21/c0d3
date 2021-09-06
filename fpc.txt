@@ -1,0 +1,106 @@
+MINE:
+
+punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+uninteresting_words = ["the", "a", "to", "if", "is", "it", "of", "and", "or", "an", "as", "i", "me", "my", \
+    "we", "our", "ours", "you", "your", "yours", "he", "she", "him", "his", "her", "hers", "its", "they", "them", \
+    "their", "what", "which", "who", "whom", "this", "that", "am", "are", "was", "were", "be", "been", "being", \
+    "have", "has", "had", "do", "does", "did", "but", "at", "by", "with", "from", "here", "when", "where", "how", \
+    "all", "any", "both", "each", "few", "more", "some", "such", "no", "nor", "too", "very", "can", "will", "just"]
+
+
+for char in punctuations:
+    file_contents = file_contents.replace(punctuations,'')
+file_contents = file_contents.lower()
+#print(file_contents)
+
+text = file_contents.replace('[uninteresting_words]',"")
+#print(text) 
+
+text_new= text.split()
+print(text_new)
+
+d = {}
+for word in text_new:
+    d[word] = d.get(word, 0) + 1
+print(d)
+
+word_freq = [] 
+for key, value in d.items():
+    #word_freq.append((value,key))
+#print(word_freq)
+        operator = key
+        word_freq = list.sort((operator, value)
+if len(key) <= 0
+    
+    #wordcloud
+cloud = wordcloud.WordCloud()
+cloud.generate_from_frequencies(word_freq)
+return cloud.to_array()
+
+COMPLETE:
+
+def calculate_frequencies(file_contents):
+    # Here is a list of punctuations and uninteresting words you can use to process your text
+    punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+    uninteresting_words = ["the", "a", "to", "if", "is", "it", "of", "and", "or", "an", "as", "i", "me", "my", \
+    "we", "our", "ours", "you", "your", "yours", "he", "she", "him", "his", "her", "hers", "its", "they", "them", \
+    "their", "what", "which", "who", "whom", "this", "that", "am", "are", "was", "were", "be", "been", "being", \
+    "have", "has", "had", "do", "does", "did", "but", "at", "by", "with", "from", "here", "when", "where", "how", \
+    "all", "any", "both", "each", "few", "more", "some", "such", "no", "nor", "too", "very", "can", "will", "just"]
+    
+    # LEARNER CODE START HERE
+    freq = {}
+    file_contents = file_contents.split()
+    str2 =""
+    
+    for word in file_contents:
+        str2 = ''.join(ch for ch in word if ch.isalnum())
+        if str2.lower() not in uninteresting_words:
+            
+            if str2.lower() not in freq:
+                freq[str2.lower()] = 1
+            else:
+                freq[str2.lower()] += 1
+            
+    cloud = wordcloud.WordCloud()
+    cloud.generate_from_frequencies(freq)
+    return cloud.to_array()
+
+INCOMPLETE:
+
+def calculate_frequencies(file_contents):
+    # Here is a list of punctuations and uninteresting words you can use to process your text
+    punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+    uninteresting_words = ["the", "a", "to", "if", "is", "it", "of", "and", "or", "an", "as", "i", "me", "my", \
+    "we", "our", "ours", "you", "your", "yours", "he", "she", "him", "his", "her", "hers", "its", "they", "them", \
+    "their", "what", "which", "who", "whom", "this", "that", "am", "are", "was", "were", "be", "been", "being", \
+    "have", "has", "had", "do", "does", "did", "but", "at", "by", "with", "from", "here", "when", "where", "how", \
+    "all", "any", "both", "each", "few", "more", "some", "such", "no", "nor", "too", "very", "can", "will", "just"]
+    
+    # LEARNER CODE START HERE
+    word_s = file_contents.split(" ")
+    
+    word_slist = []
+    
+    for word in word_s:
+        for uninteresting_word in uninteresting_words:
+            if word is not uninteresting_word:
+                word_slist.append(word)
+    
+    
+    for word in word_slist:
+        if not word.isalpha():
+            word = ''.join([letter for letter in word if word.isalpha()])
+            
+    
+    
+    
+    word_sdict = {}
+    
+    for word in word_slist:
+        if word not in word_sdict.keys():
+            word_sdict[word] = word_slist.count(word)
+            
+    cloud = wordcloud.WordCloud()
+    cloud.generate_from_frequencies(freq)
+    return cloud.to_array()
